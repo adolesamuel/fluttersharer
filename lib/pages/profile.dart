@@ -6,6 +6,7 @@ import 'package:fluttershare/pages/edit_profile.dart';
 import 'package:fluttershare/widgets/header.dart';
 import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/post.dart';
+import 'package:fluttershare/widgets/post_tile.dart';
 import 'package:fluttershare/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
@@ -22,6 +23,7 @@ class _ProfileState extends State<Profile> {
   bool isLoading = false;
   int postCount = 0;
   List<Post> posts;
+  String postOrientation = 'grid';
 
   @override
   void initState() {
@@ -186,9 +188,58 @@ class _ProfileState extends State<Profile> {
   buildProfilePosts() {
     if (isLoading) {
       return circularProgress();
+    } else if (postOrientation == 'grid') {
+      List<GridTile> gridTiles = [];
+      posts.forEach((post) {
+        gridTiles.add(GridTile(
+            child: PostTile(
+          post: post,
+        )));
+      });
+      return GridView.count(
+        crossAxisCount: 3,
+        childAspectRatio: 1.0,
+        mainAxisSpacing: 1.5,
+        crossAxisSpacing: 1.5,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: gridTiles,
+      );
+    } else {
+      return Column(
+        children: posts,
+      );
     }
-    return Column(
-      children: posts,
+  }
+
+  setPostOrientations(String newOrientation) {
+    setState(() {
+      this.postOrientation = newOrientation;
+    });
+  }
+
+  buildTogglePostOrientation() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.grid_on,
+            color: postOrientation == 'grid'
+                ? Theme.of(context).primaryColor
+                : Colors.grey,
+          ),
+          onPressed: () => setPostOrientations('grid'),
+        ),
+        IconButton(
+            icon: Icon(
+              Icons.list,
+              color: postOrientation == 'list'
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey,
+            ),
+            onPressed: () => setPostOrientations('list'))
+      ],
     );
   }
 
@@ -199,6 +250,8 @@ class _ProfileState extends State<Profile> {
       body: ListView(
         children: <Widget>[
           buildProfileHeader(),
+          Divider(),
+          buildTogglePostOrientation(),
           Divider(
             height: 0.0,
           ),
