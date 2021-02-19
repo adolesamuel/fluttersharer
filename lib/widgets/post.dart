@@ -7,7 +7,7 @@ import 'package:fluttershare/widgets/progress.dart';
 
 class Post extends StatefulWidget {
   final String postId;
-  final String ownerId;
+  final String ownerid;
   final String username;
   final String location;
   final String description;
@@ -17,7 +17,7 @@ class Post extends StatefulWidget {
   Post(
       {Key key,
       this.postId,
-      this.ownerId,
+      this.ownerid,
       this.username,
       this.location,
       this.description,
@@ -28,7 +28,7 @@ class Post extends StatefulWidget {
   factory Post.fromDocument(DocumentSnapshot doc) {
     return Post(
       postId: doc['postId'],
-      ownerId: doc['ownerId'],
+      ownerid: doc['ownerid'],
       username: doc['username'],
       location: doc['location'],
       description: doc['description'],
@@ -53,7 +53,7 @@ class Post extends StatefulWidget {
   @override
   _PostState createState() => _PostState(
         postId: this.postId,
-        ownerId: this.ownerId,
+        ownerid: this.ownerid,
         username: this.username,
         location: this.location,
         description: this.description,
@@ -65,7 +65,7 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   final String postId;
-  final String ownerId;
+  final String ownerid;
   final String username;
   final String location;
   final String description;
@@ -75,7 +75,7 @@ class _PostState extends State<Post> {
 
   _PostState({
     this.postId,
-    this.ownerId,
+    this.ownerid,
     this.username,
     this.location,
     this.description,
@@ -85,15 +85,13 @@ class _PostState extends State<Post> {
   });
 
   buildPostHeader() {
-    return FutureBuilder(
-        future: usersRef.document(ownerId).get(),
+    return FutureBuilder<DocumentSnapshot>(
+        future: usersRef.document(ownerid).get(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return circularProgress();
           }
-          if (snapshot.hasError) {
-            print('error ${snapshot.error}');
-          }
+
           User user = User.fromDocument(snapshot.data);
           return ListTile(
             leading: CircleAvatar(
