@@ -134,7 +134,7 @@ class _ProfileState extends State<Profile> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
-                              buildCountColumn("posts", 0),
+                              buildCountColumn("posts", postCount),
                               buildCountColumn("followers", 0),
                               buildCountColumn("following", 0),
                             ],

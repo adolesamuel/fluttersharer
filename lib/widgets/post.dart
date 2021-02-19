@@ -119,7 +119,11 @@ class _PostState extends State<Post> {
       onDoubleTap: () => print('liking post'),
       child: Stack(
         alignment: Alignment.center,
-        children: <Widget>[Image.network(mediaUrl)],
+        children: <Widget>[
+          CachedNetworkImage(
+            imageUrl: mediaUrl,
+          )
+        ],
       ),
     );
   }
