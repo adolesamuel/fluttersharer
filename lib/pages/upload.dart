@@ -137,7 +137,7 @@ class _UploadState extends State<Upload> {
         .document('postId')
         .setData({
       "postId": postId,
-      "ownderid": widget.currentUser.id,
+      "ownerid": widget.currentUser.id,
       "username": widget.currentUser.username,
       "mediaUrl": mediaurl,
       "description": description,

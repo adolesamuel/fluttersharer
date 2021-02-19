@@ -18,6 +18,9 @@ class User {
   });
 
   factory User.fromDocument(DocumentSnapshot doc) {
+    if (doc == null) {
+      return null;
+    }
     return User(
       id: doc['id'],
       username: doc['username'],
