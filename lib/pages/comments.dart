@@ -1,7 +1,12 @@
+import 'dart:html';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/header.dart';
 import 'package:fluttershare/widgets/progress.dart';
+import 'package:timeago/timeago.dart' as timeAgo;
 
 class Comments extends StatefulWidget {
   final String postId;
@@ -42,6 +47,13 @@ class CommentsState extends State<Comments> {
         if (!snapshot.hasData) {
           return circularProgress();
         }
+        List<Comment> comments = [];
+        snapshot.data.document.forEach((doc) {
+          comments.add(Comment.fromDocument(doc));
+        });
+        return ListView(
+          children: comments,
+        );
       },
     );
   }
@@ -83,8 +95,43 @@ class CommentsState extends State<Comments> {
 }
 
 class Comment extends StatelessWidget {
+  final String username;
+  final String userId;
+  final String avatarUrl;
+  final String comment;
+  final Timestamp timestamp;
+
+  Comment({
+    this.username,
+    this.userId,
+    this.avatarUrl,
+    this.comment,
+    this.timestamp,
+  });
+
+  factory Comment.fromDocument(DocumentSnapshot doc) {
+    return Comment(
+      username: doc['username'],
+      userId: doc['userId'],
+      avatarUrl: doc['avatarUrl'],
+      comment: doc['comment'],
+      timestamp: doc['timestamp'],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text('Comment');
+    return Column(
+      children: <Widget>[
+        ListTile(
+          title: Text(comment),
+          leading: CircleAvatar(
+            backgroundImage: CachedNetworkImageProvider(avatarUrl),
+          ),
+          subtitle: Text(timeAgo.format(timestamp.toDate())),
+        ),
+        Divider(),
+      ],
+    );
   }
 }
