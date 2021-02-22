@@ -200,7 +200,12 @@ class _PostState extends State<Post> {
             ),
             Padding(padding: EdgeInsets.only(right: 20.0)),
             GestureDetector(
-                onTap: () => print('showing comments'),
+                onTap: () => showComments(
+                      context,
+                      postId: postId,
+                      ownerId: ownerid,
+                      mediaUrl: mediaUrl,
+                    ),
                 child: Icon(
                   Icons.chat,
                   size: 28.0,
@@ -255,4 +260,7 @@ class _PostState extends State<Post> {
       ],
     );
   }
+
+  showComments(BuildContext context,
+      {String postId, String ownerId, String mediaUrl}) {}
 }
