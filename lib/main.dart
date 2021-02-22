@@ -9,6 +9,8 @@ void main() {
   )
       .then((value) {
     print('Timestamps enabled in snapshots\n');
+  }, onError: (_) {
+    print('Error enabling Timestamps in firestore');
   });
   runApp(MyApp());
 }
