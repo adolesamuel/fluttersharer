@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:fluttershare/pages/home.dart';
 
 void main() {
-  Firestore.instance
-      .settings(
-    timestampsInSnapshotsEnabled: true,
-  )
-      .then((value) {
-    print('Timestamps enabled in snapshots\n');
-  }, onError: (_) {
-    print('Error enabling Timestamps in firestore');
-  });
+  WidgetsFlutterBinding.ensureInitialized();
+  // Firestore.instance
+  //     .settings(
+  //   timestampsInSnapshotsEnabled: true,
+  // )
+  //     .then((value) {
+  //   print('Timestamps enabled in snapshots\n');
+  // }, onError: (_) {
+  //   print('Error enabling Timestamps in firestore');
+  // });
   runApp(MyApp());
 }
 

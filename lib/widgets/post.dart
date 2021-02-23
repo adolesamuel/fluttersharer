@@ -157,6 +157,7 @@ class _PostState extends State<Post> {
   }
 
   addLikeToActivityFeed() {
+    bool isNotPostOwner = currentUserId != ownerid;
     activityFeedRef
         .document(ownerid)
         .collection('feedItems')
@@ -195,11 +196,11 @@ class _PostState extends State<Post> {
           ),
           showHeart
               ? Animator(
-                  duration: Duration(milliseconds: 500),
-                  tween: Tween(begin: 0.8, end: 1.4),
+                  duration: Duration(milliseconds: 1000),
+                  tween: Tween(begin: 0.5, end: 1.4),
                   curve: Curves.elasticOut,
-                  cycles: 1,
-                  builder: (anim) => Transform.scale(
+                  cycles: 2,
+                  builder: (context, anim, widget) => Transform.scale(
                     scale: anim.value,
                     child: Icon(
                       Icons.favorite,
