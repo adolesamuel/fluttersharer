@@ -158,18 +158,21 @@ class _PostState extends State<Post> {
 
   addLikeToActivityFeed() {
     bool isNotPostOwner = currentUserId != ownerid;
-    activityFeedRef
-        .document(ownerid)
-        .collection('feedItems')
-        .document(postId)
-        .setData({
-      "type": "like",
-      "username": currentUser.username,
-      "userId": currentUser.id,
-      "userProfileImg": currentUser.photoUrl,
-      "mediaUrl": mediaUrl,
-      "timestamp": timestamp,
-    });
+    if (isNotPostOwner) {
+      activityFeedRef
+          .document(ownerid)
+          .collection('feedItems')
+          .document(postId)
+          .setData({
+        "type": "like",
+        "username": currentUser.username,
+        "userId": currentUser.id,
+        "userProfileImg": currentUser.photoUrl,
+        "postId": postId,
+        "mediaUrl": mediaUrl,
+        "timestamp": timestamp,
+      });
+    }
   }
 
   removeLikeFromActivityFeed() {
