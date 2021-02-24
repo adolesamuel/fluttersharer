@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/user.dart';
+import 'package:fluttershare/pages/activity_feed.dart';
 import 'package:fluttershare/pages/comments.dart';
 import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/progress.dart';
@@ -98,7 +99,6 @@ class _PostState extends State<Post> {
           if (!snapshot.hasData) {
             return circularProgress();
           }
-
           User user = User.fromDocument(snapshot.data);
           return ListTile(
             leading: CircleAvatar(
@@ -106,6 +106,7 @@ class _PostState extends State<Post> {
               backgroundImage: CachedNetworkImageProvider(user.photoUrl),
             ),
             title: GestureDetector(
+              onTap: () => showProfile(context, profileId: user.id),
               child: Text(
                 user.username,
                 style:
