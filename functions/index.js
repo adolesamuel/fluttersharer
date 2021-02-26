@@ -10,7 +10,8 @@ admin.initializeApp();
 //   response.send("Hello from Firebase!");
 // });
 exports.onCreateFollower = functions.firestore
-    .document("/followers/{userId}/userFollowers/{followeId}").onCreate(async (snapshot, context) => {
+    .document("/followers/{userId}/userFollowers/{followerId}")
+    .onCreate(async (snapshot, context) => {
         console.log("follower created", snapshot.data());
         const userId = context.params.userId;
         const followerId = context.params.followerId;
@@ -37,8 +38,34 @@ exports.onCreateFollower = functions.firestore
             if (doc.exists) {
                 const postId = doc.id;
                 const postData = doc.data();
-                timelinePostsRef.doc(postId).set(postData);
-            }
-        })
+                return timelinePostsRef.doc(postId).set(postData);
 
+            }
+            else {
+                return timelinePostsRef.doc(userId).set({ 'Document': 'No data' });
+            }
+        });
+
+    });
+
+exports.onDeleteFollower = functions.firestore
+    .document("/followers/{userId}/userFollowers/{followerId}")
+    .onDelete(async (snapshot, context) => {
+        console.log("Follower Deleted", snapshot.id);
+
+        const userId = context.params.userId;
+        const followerId = context.params.followerId;
+
+        const timelinePostsRef = admin
+            .firestore()
+            .collection('timeline')
+            .doc(followerId)
+            .collection('timelinePosts')
+            .where("ownerId", "==", userId);
+        const querySnapshot = await timelinePostsRef.get();
+        querySnapshot.forEach(doc => {
+            if (doc.exists) {
+                doc.ref.delete();
+            }
+        });
     });
