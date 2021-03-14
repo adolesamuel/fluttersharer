@@ -69,3 +69,98 @@ exports.onDeleteFollower = functions.firestore
             }
         });
     });
+
+
+exports.onCreatePost = functions.firestore
+    .document("/posts/{userId}/userPosts/{postId}")
+    .onCreate(async (snapshot, context) => {
+        const postCreated = snapshot.data();
+        const userId = context.params.userId;
+        const postId = context.params.postId;
+
+
+        //get all the followers of the users who made the post
+
+        const userFollowersRef = admin.firestore()
+            .collection('followers')
+            .doc(userId)
+            .collection('userFollowers');
+
+        const querySnapshot = await userFollowersRef.get();
+        // add the new post to each userfollowers timeline
+        querySnapshot.forEach(doc => {
+            const followerId = doc.id;
+
+            admin.firestore()
+                .collection('timeline')
+                .doc(followerId)
+                .collection('timelinePosts')
+                .doc(postId)
+                .set(postCreated);
+        });
+
+    });
+
+exports.onUpdatePost = functions.firestore
+    .document('/posts/{userId}/userPosts/{postId}')
+    .onUpdate(async (change, context) => {
+        const postUpdate = change.after.data();
+        const userId = context.params.userId;
+        const postId = context.params.postId;
+
+        //get all the followers of the users who made the post
+
+        const userFollowersRef = admin.firestore()
+            .collection('followers')
+            .doc(userId)
+            .collection('userFollowers');
+        const querySnapshot = await userFollowersRef.get();
+
+
+        querySnapshot.forEach(doc => {
+            const followerId = doc.id;
+
+            admin.firestore()
+                .collection('timeline')
+                .doc(followerId)
+                .collection('timelinePosts')
+                .doc(postId)
+                .get().then(doc => {
+                    if (doc.exists) {
+                        doc.ref.update(postUpdate);
+                    }
+                });
+        });
+    });
+
+
+exports.onDeletePost = functions.firestore
+    .document('/posts/{userId}/userPosts/{postId}')
+    .onDelete(async (snapshot, context) => {
+        const userId = context.params.userId;
+        const postId = context.params.postId;
+
+        //get all the followers of the users who made the post
+
+        const userFollowersRef = admin.firestore()
+            .collection('followers')
+            .doc(userId)
+            .collection('userFollowers');
+        const querySnapshot = await userFollowersRef.get();
+
+
+        querySnapshot.forEach(doc => {
+            const followerId = doc.id;
+
+            admin.firestore()
+                .collection('timeline')
+                .doc(followerId)
+                .collection('timelinePosts')
+                .doc(postId)
+                .get().then(doc => {
+                    if (doc.exists) {
+                        doc.ref.delete();
+                    }
+                });
+        });
+    });
