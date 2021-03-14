@@ -36,7 +36,7 @@ exports.onCreateFollower = functions.firestore
         //4 Add each user post to following user's timeline
         querySnapshot.forEach(doc => {
             if (doc.exists) {
-                const postId = doc.id;
+                const postId = doc.data().postId;
                 const postData = doc.data();
                 return timelinePostsRef.doc(postId).set(postData);
 
@@ -65,7 +65,7 @@ exports.onDeleteFollower = functions.firestore
         const querySnapshot = await timelinePostsRef.get();
         querySnapshot.forEach(doc => {
             if (doc.exists) {
-                doc.ref.delete();
+                return doc.ref.delete();
             }
         });
     });
